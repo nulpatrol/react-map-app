@@ -32,3 +32,17 @@
 .leaflet-container {
   height: 600px;
 }
+
+.container {
+  display: flex;
+}
+
+.map {
+  height: 600px;
+  display: block;
+  flex: 1 auto;
+}
+
+.left-panel {
+  width: 350px;
+}

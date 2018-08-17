@@ -13,11 +13,13 @@ class App extends Component {
         lat: 50.068501,
         lng: 19.947501,
         zoom: 6,
+        value: '',
     }
 
-    render() {
-        const position = [this.state.lat, this.state.lng];
-        const markers = [
+    constructor(props) {
+        super(props);
+
+        this.state.markers = [
             { 
                 position: [this.state.lat, this.state.lng], 
                 title: 'Railway', 
@@ -43,23 +45,46 @@ class App extends Component {
                 title: 'Gruba Bula',
             }
         ];
+    }
 
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+    }
+
+    handleSubmit(event) {
+        this.state.markers.push({
+            position: [50.072112, parseFloat(this.state.value)],
+            title: 'New',
+        });
+        this.setState({ value: '' });
+        event.preventDefault();
+    }
+
+    render() {
+        const position = [this.state.lat, this.state.lng];
+        
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">Welcome to React</h1>
                 </header>
-                <div>
-                    <Map center={position} zoom={this.state.zoom}>
+                <div className="container">
+                    <div className="left-panel">
+                        <form onSubmit={this.handleSubmit.bind(this)}>
+                            <input type="text" value={this.state.value} onChange={this.handleChange.bind(this)} />
+                        </form>
+                    </div>
+                    <div className="map">
+                        <Map center={position} zoom={this.state.zoom} maxZoom="15">
                         <TileLayer
                             attribution=""
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         <MarkerClusterGroup showCoverageOnHover={false}>
-                            {markers.map((marker) => {
+                            {this.state.markers.map((marker) => {
                                 return (
-                                    <Marker position={marker.position}>
+                                    <Marker key={marker.title} position={marker.position}>
                                         <Popup>
                                             { (typeof marker.title !== 'string') ?  marker.title() : marker.title }
                                         </Popup>
@@ -68,6 +93,7 @@ class App extends Component {
                             })}
                         </MarkerClusterGroup>
                     </Map>
+                    </div>
                 </div>
             </div>
         );
